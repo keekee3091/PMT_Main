@@ -2,6 +2,7 @@ package com.ISCOD_Eval.pmt_backend.controllers;
 
 import com.ISCOD_Eval.pmt_backend.models.User;
 import com.ISCOD_Eval.pmt_backend.services.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,12 +31,22 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+    }
+
     @Test
     void getAllUsersTest() throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        User user1 = new User();
+        user1.setUsername("John Doe");
+        user1.setEmail("john@example.com");
+        user1.setPassword("password");
 
-        User user1 = new User("John Doe", "john@example.com", "password");
-        User user2 = new User("Jane Doe", "jane@example.com", "password");
+        User user2 = new User();
+        user2.setUsername("Jane Doe");
+        user2.setEmail("jane@example.com");
+        user2.setPassword("password");
 
         List<User> userList = Arrays.asList(user1, user2);
         when(userService.getAllUsers()).thenReturn(userList);
