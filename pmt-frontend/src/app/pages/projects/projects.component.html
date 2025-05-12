@@ -1,0 +1,9 @@
+<h2>Mes Projets</h2>
+<ul *ngIf="projects.length > 0; else noProjects">
+  <li *ngFor="let project of projects">
+    {{ project.name }} - {{ project.description }}
+  </li>
+</ul>
+<ng-template #noProjects>
+  <p>Aucun projet trouvé.</p>
+</ng-template>

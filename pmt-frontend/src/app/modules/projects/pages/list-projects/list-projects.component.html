@@ -1,0 +1,190 @@
+<div class="container mt-4">
+  <h2>Liste des projets</h2>
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-success" (click)="toggleCreateProjectModal()">➕ Créer un projet</button>
+  </div>
+  <table class="table table-striped">
+    <thead class="table-light">
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Date Commencement</th>
+        <th>Adminstrateur</th>
+        <th>Actions</th>
+        <th>Historique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of projects">
+        <td>{{ project.name }}</td>
+        <td>{{ project.description }}</td>
+        <td>{{ project.startDate }}</td>
+        <td>{{ project.owner.username }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" (click)="openTaskModal(project.id)">Voir les tâches</button>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-secondary" (click)="openHistoryModal(project.id)">📜 Historique</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal" *ngIf="showCreateModal">
+  <div class="modal-content p-3">
+    <h5>Créer un nouveau projet</h5>
+    <div class="mb-3">
+      <label>Nom</label>
+      <input [(ngModel)]="newProject.name" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea [(ngModel)]="newProject.description" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+      <label>Date de commencement</label>
+      <input type="date" [(ngModel)]="newProject.startDate" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label>Membres du projet</label>
+      <div *ngFor="let member of availableMembers">
+        <div class="mb-2">
+          <input type="checkbox"
+                 [(ngModel)]="member.selected"
+                 (change)="onMemberSelectionChange(member)" />
+          {{ member.username }}
+          <select [(ngModel)]="member.role"
+                  class="form-select"
+                  [disabled]="!member.selected || isAdminAssigned"
+                  (change)="onMemberSelectionChange(member)">
+            <option value="ADMIN" [disabled]="isAdminAssigned && member.role !== 'ADMIN'">Administrateur</option>
+            <option value="MEMBER">Membre</option>
+            <option value="OBSERVER">Observateur</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="text-end">
+      <button class="btn btn-primary" (click)="createProject()">Créer</button>
+      <button class="btn btn-secondary" (click)="toggleCreateProjectModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content p-3">
+    <h4 class="mb-3">📋 Tâches du projet : <strong>{{ currentProject?.name }}</strong></h4>
+
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Titre</th>
+          <th>Description</th>
+          <th>Échéance</th>
+          <th>Priorité</th>
+          <th>Statut</th>
+          <th>Assignée à</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of projectTasks">
+          <td><input [(ngModel)]="task.title" class="form-control" /></td>
+          <td><input [(ngModel)]="task.description" class="form-control" /></td>
+          <td><input [(ngModel)]="task.dueDate" type="date" class="form-control" /></td>
+          <td>
+            <select [(ngModel)]="task.priority" class="form-select">
+              <option value="LOW">Basse</option>
+              <option value="MEDIUM">Moyenne</option>
+              <option value="HIGH">Haute</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="task.status" class="form-select">
+              <option value="PENDING">En attente</option>
+              <option value="IN_PROGRESS">En cours</option>
+              <option value="COMPLETED">Terminée</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="task.assignedToId" class="form-select">
+              <option [ngValue]="null">--</option>
+              <option *ngFor="let m of members" [ngValue]="m.id">{{ m.username }}</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-success" (click)="updateTask(task)">💾</button>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input [(ngModel)]="newTask.title" class="form-control" /></td>
+          <td><input [(ngModel)]="newTask.description" class="form-control" /></td>
+          <td><input [(ngModel)]="newTask.dueDate" type="date" class="form-control" /></td>
+          <td>
+            <select [(ngModel)]="newTask.priority" class="form-select">
+              <option value="LOW">Basse</option>
+              <option value="MEDIUM">Moyenne</option>
+              <option value="HIGH">Haute</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newTask.status" class="form-select">
+              <option value="PENDING">En attente</option>
+              <option value="IN_PROGRESS">En cours</option>
+              <option value="COMPLETED">Terminée</option>
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newTask.assignedToId" class="form-select">
+              <option [ngValue]="null">--</option>
+              <option *ngFor="let m of members" [ngValue]="m.id">{{ m.username }}</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary" (click)="addTask()">➕</button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-end">
+      <button class="btn btn-outline-secondary" (click)="closeModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" *ngIf="showHistoryModal">
+  <div class="modal-content p-3">
+    <h4 class="mb-3">🕓 Historique des tâches du projet : <strong>{{ currentProject?.name }}</strong></h4>
+
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>Champ</th>
+          <th>Ancienne valeur</th>
+          <th>Nouvelle valeur</th>
+          <th>Modifié par</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let h of taskHistory">
+          <td>{{ h.fieldChanged }}</td>
+          <td>{{ h.oldValue }}</td>
+          <td>{{ h.newValue }}</td>
+          <td>{{ h.changedBy?.username }}</td>
+          <td>{{ h.changedAt | date:'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="text-end">
+      <button class="btn btn-outline-secondary" (click)="closeHistoryModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+

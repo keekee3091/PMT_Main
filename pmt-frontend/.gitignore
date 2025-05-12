@@ -1,0 +1,54 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System files
+.DS_Store
+Thumbs.db
+.vs/pmt-frontend/FileContentIndex/6c636576-f14f-40fe-aecf-32365b4f60ce.vsidx
+.vs/pmt-frontend/FileContentIndex/8894a095-6d7d-441b-88d7-1380beefd2ad.vsidx
+.vs/pmt-frontend/FileContentIndex/319988e1-8b88-4ad8-8aef-8734ed5d119f.vsidx
+.vs/pmt-frontend/FileContentIndex/a2d20ba5-9908-4efc-88bc-4fe7cee62d5b.vsidx
+.vs/pmt-frontend/FileContentIndex/ee0ad488-3613-44a8-8622-2cb39a3cf1d5.vsidx
+.vs/pmt-frontend/v17/.wsuo
+.vs/pmt-frontend/FileContentIndex/ddd3bef2-5a7d-454d-b60c-962dbfcdd304.vsidx
+.vs/pmt-frontend/FileContentIndex/e05440dc-0066-48e9-8048-50c60170b3a9.vsidx
+.vs/pmt-frontend/FileContentIndex/aef15185-534e-40fe-be9b-b975cfd78d05.vsidx
+.vs/pmt-frontend/FileContentIndex/98a7a602-d361-4973-9d12-f67ad3996223.vsidx
+.vs/pmt-frontend/FileContentIndex/fb67c634-07e7-4931-8625-fa64a41617ae.vsidx
+.vs/pmt-frontend/FileContentIndex/91254334-3a00-4ade-a0d6-b8467fd25467.vsidx
