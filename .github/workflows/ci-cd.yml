@@ -91,8 +91,8 @@ jobs:
         run: |
           cd pmt-frontend
           npm install
-          npm run test -- --browsers=ChromeHeadless
-
+          npm run test -- --browsers=ChromeHeadless | tee frontend-test-output.txt
+          
       - name: Check frontend test results
         run: |
           if grep -q "Executed 26 of 26 SUCCESS" frontend-test-output.txt; then
@@ -101,7 +101,7 @@ jobs:
             echo "Tests did not complete successfully. Skipping remaining steps."
             exit 0
           fi
-          
+
       - name: Build Docker image for frontend
         run: |
           cd pmt-frontend
