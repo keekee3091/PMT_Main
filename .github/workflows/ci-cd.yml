@@ -11,6 +11,7 @@ on:
 env:
   DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
   DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+  SKIP_FRONTEND_TESTS: false
 
 jobs:
   build-and-test-backend:
@@ -102,9 +103,14 @@ jobs:
         run: |
           cd pmt-backend
           nohup ./mvnw spring-boot:run &
-          sleep 20  # Laisse le temps au backend de démarrer
+          sleep 20  
+
+      - name: Vérifier le backend
+        run: |
+          curl -f http://localhost:8080/api/projects || echo "Backend non accessible"
 
       - name: Install and test frontend
+        if: env.SKIP_FRONTEND_TESTS != 'true'
         run: |
           cd pmt-frontend
           npm install
