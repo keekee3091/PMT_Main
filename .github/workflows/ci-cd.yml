@@ -91,15 +91,21 @@ jobs:
         run: |
           cd pmt-frontend
           npm install
-          npm run test -- --browsers=ChromeHeadless | tee frontend-test-output.txt
-          
+          npm run test -- --browsers=ChromeHeadless 2>&1 | tee frontend-test-output.txt
+
       - name: Check frontend test results
         run: |
+          # Vérifie si les tests ont été exécutés avec succès
           if grep -q "Executed 26 of 26 SUCCESS" frontend-test-output.txt; then
             echo "All tests passed. Continuing pipeline..."
           else
-            echo "Tests did not complete successfully. Skipping remaining steps."
-            exit 0
+            # Vérifie si les erreurs contiennent uniquement des erreurs API et non des erreurs de test
+            if grep -q "Erreur API" frontend-test-output.txt && ! grep -q "FAILED" frontend-test-output.txt; then
+              echo "API errors detected but tests passed. Continuing pipeline..."
+            else
+              echo "Tests did not complete successfully. Exiting..."
+              exit 1
+            fi
           fi
 
       - name: Build Docker image for frontend
