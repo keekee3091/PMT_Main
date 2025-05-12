@@ -95,11 +95,9 @@ jobs:
 
       - name: Check frontend test results
         run: |
-          # Vérifie si les tests ont été exécutés avec succès
           if grep -q "Executed 26 of 26 SUCCESS" frontend-test-output.txt; then
             echo "All tests passed. Continuing pipeline..."
           else
-            # Vérifie si les erreurs contiennent uniquement des erreurs API et non des erreurs de test
             if grep -q "Erreur API" frontend-test-output.txt && ! grep -q "FAILED" frontend-test-output.txt; then
               echo "API errors detected but tests passed. Continuing pipeline..."
             else
