@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ProjectService } from './project.service';
+import { environment } from '../../environments/environments';
 
 describe('ProjectService', () => {
   let service: ProjectService;

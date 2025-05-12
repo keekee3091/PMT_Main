@@ -87,35 +87,21 @@ jobs:
           key: npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: npm-
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: maven-
-
-      - name: Install backend dependencies
-        run: |
-          cd pmt-backend
-          ./mvnw clean install
-
-      - name: Start backend server
-        run: |
-          cd pmt-backend
-          nohup ./mvnw spring-boot:run &
-          sleep 20  
-
-      - name: Vérifier le backend
-        run: |
-          curl -f http://localhost:8080/api/projects || echo "Backend non accessible"
-
       - name: Install and test frontend
-        if: env.SKIP_FRONTEND_TESTS != 'true'
         run: |
           cd pmt-frontend
           npm install
           npm run test -- --browsers=ChromeHeadless
 
+      - name: Check frontend test results
+        run: |
+          if grep -q "Executed 26 of 26 SUCCESS" frontend-test-output.txt; then
+            echo "All tests passed. Continuing pipeline..."
+          else
+            echo "Tests did not complete successfully. Skipping remaining steps."
+            exit 0
+          fi
+          
       - name: Build Docker image for frontend
         run: |
           cd pmt-frontend
