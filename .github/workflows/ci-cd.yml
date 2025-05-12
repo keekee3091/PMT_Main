@@ -53,33 +53,37 @@ jobs:
   build-and-test-frontend:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+        - name: Checkout code
+          uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '18'
 
-      - name: Cache Node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: npm-
+        - name: Install Chrome dependencies
+          run: sudo apt-get install -y libgtk-3-0 libx11-xcb1 libxcomposite1 libxdamage1 libxi6 libxtst6 libnss3 libxrandr2 libasound2 libatk-bridge2.0-0 libxss1 libxshmfence1 libgbm-dev
 
-      - name: Install and test frontend
-        run: |
-          cd pmt-frontend
-          npm install
-          npm run test
+        - name: Cache Node modules
+          uses: actions/cache@v3
+          with:
+            path: ~/.npm
+            key: npm-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: npm-
 
-      - name: Build Docker image for frontend
-        run: |
-          cd pmt-frontend
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/pmt-frontend:latest .
+        - name: Install and test frontend
+          run: |
+            cd pmt-frontend
+            npm install
+            npm run test -- --browsers=ChromeHeadless
 
-      - name: Push frontend image to Docker Hub
-        run: |
-          echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
-          docker push ${{ env.DOCKER_HUB_USERNAME }}/pmt-frontend:latest
+        - name: Build Docker image for frontend
+          run: |
+            cd pmt-frontend
+            docker build -t ${{ env.DOCKER_HUB_USERNAME }}/pmt-frontend:latest .
+
+        - name: Push frontend image to Docker Hub
+          run: |
+            echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
+            docker push ${{ env.DOCKER_HUB_USERNAME }}/pmt-frontend:latest
+
