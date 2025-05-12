@@ -26,7 +26,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission to mvnw
-        run: chmod +x pmt-backend/mvnw
+        run: |
+          cd pmt-backend
+          chmod +x mvnw
 
       - name: Cache Maven dependencies
         uses: actions/cache@v3
