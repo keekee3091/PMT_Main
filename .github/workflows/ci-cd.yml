@@ -91,7 +91,7 @@ jobs:
         run: |
           cd pmt-frontend
           npm install
-          npm run test -- --browsers=ChromeHeadless 2>&1 | tee frontend-test-output.txt
+          npm run test -- --browsers=ChromeHeadless 2>&1 | tee ../frontend-test-output.txt
 
       - name: Check frontend test results
         run: |
